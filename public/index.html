@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cliente WS de Fútbol</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: auto; }
+        fieldset { margin-bottom: 1rem; }
+        #log { background: #f4f4f4; padding: .5rem; height: 300px; overflow-y: scroll; }
+    </style>
+</head>
+<body>
+  <h1>Actualizaciones de Fútbol</h1>
+
+  <fieldset>
+        <legend>Elige competiciones</legend>
+        <label><input type="checkbox" name="league" value="PL"> Premier League</label><br>
+        <label><input type="checkbox" name="league" value="CL"> Champions League</label><br>
+        <label><input type="checkbox" name="league" value="EL"> Europa League</label>
+  </fieldset>
+
+  <fieldset>
+        <legend>Elige estado</legend>
+        <label><input type="checkbox" name="status" value="SCHEDULED"> Programados</label><br>
+        <label><input type="checkbox" name="status" value="IN_PLAY"> En juego</label><br>
+        <label><input type="checkbox" name="status" value="FINISHED"> Finalizados</label>
+  </fieldset>
+
+  <button id="btnApply">Aplicar filtros</button>
+  <pre id="log"></pre>
+
+  <script>
+    const log = document.getElementById('log');
+    const ws = new WebSocket('ws://' + location.host + '/ws');
+
+    ws.onopen = () => log.textContent += '[✔] Conectado\\n';
+    ws.onmessage = ({data}) => log.textContent += '[📢] ' + data + '\\n\\n';
+    ws.onerror = e => log.textContent += '[❌] ' + e.message + '\\n';
+    ws.onclose = () => log.textContent += '[ℹ️] Conexión cerrada\\n';
+
+    document.getElementById('btnApply').onclick = () => {
+        const leagues = [...document.querySelectorAll('input[name=league]:checked')]
+                            .map(i => i.value);
+        const status  = [...document.querySelectorAll('input[name=status]:checked')]
+                            .map(i => i.value);
+
+        ws.send(JSON.stringify({
+            action: 'updateFilters',
+            leagues,     // ej: ["PL","CL"]
+            status       // ej: ["IN_PLAY"]
+        }));
+        log.textContent += `[➡️] Filtros enviados: ${leagues}/${status}\\n`;
+    };
+    </script>
+</body>
+</html>

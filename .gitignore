@@ -1,0 +1,36 @@
+.env
+
+# Archivos binarios generados
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Binaries de test (compilados con `go test -c`)
+*.test
+
+# Salida de ejecutables o builds
+*.out
+/bin/
+/build/
+/out/
+
+# Dependencias vendorizadas (si no las deseas incluir en el repo)
+vendor/
+
+# Archivos de editor e IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de log
+*.log
+
+# Archivos temporales y cache de compilación
+.cache/
